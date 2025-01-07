@@ -1,4 +1,4 @@
-require('dotenv').config();
+require("dotenv").config();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
@@ -20,25 +20,15 @@ const { sendResetPasswordEmail } = require("../helpers/sendResetPasswordToken");
  *           schema:
  *             type: object
  *             properties:
- *               firstName:
+ *               fullName:
  *                 type: string
- *                 example: John
- *               lastName:
- *                 type: string
- *                 example: Doe
+ *                 example: Pooja Tushar Deshmukh
  *               email:
  *                 type: string
  *                 example: tushardeshmukh57985@gmail.com
  *               password:
  *                 type: string
  *                 example: Password@123
- *               gender:
- *                 type: string
- *                 enum: [Male, Female, Other]
- *                 example: Male
- *               mobileNumber:
- *                 type: string
- *                 example: 9876543210
  *     responses:
  *       201:
  *         description: User registered successfully
@@ -50,18 +40,10 @@ const { sendResetPasswordEmail } = require("../helpers/sendResetPasswordToken");
 
 exports.register = async (req, res) => {
   try {
-    const { firstName, lastName, email, password, gender, mobileNumber } =
-      req.body;
+    const { fullName, email, password } = req.body;
 
     //validate the data
-    if (
-      !firstName ||
-      !lastName ||
-      !email ||
-      !password ||
-      !gender ||
-      !mobileNumber
-    ) {
+    if (!fullName || !email || !password) {
       return res.status(404).json({
         message: "All Fields are required!",
       });
@@ -94,12 +76,9 @@ exports.register = async (req, res) => {
 
     //save user
     const newUser = new User({
-      firstName,
-      lastName,
+      fullName,
       email,
       password: hashedPassword,
-      gender,
-      mobileNumber,
       otp,
       otpExpiresIn: Date.now() + 300000,
     });
@@ -300,11 +279,7 @@ exports.login = async (req, res) => {
       success: true,
       message: "Login successfully!",
       token,
-      user: {
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-      },
+      user:user
     });
   } catch (error) {
     return res.status(500).json({
@@ -378,8 +353,6 @@ exports.forgotPassword = async (req, res) => {
 
     // Construct reset URL with query parameter
     const resetUrl = `http://localhost:3000/reset-password/?reset-token=${resetToken}`;
-   
-
 
     // Send reset email
     const emailSent = await sendResetPasswordEmail(
@@ -479,7 +452,6 @@ exports.resetPassword = async (req, res) => {
       success: true,
       message: "Password has been successfully reset!",
     });
-    
   } catch (error) {
     console.error(error);
     return res.status(500).json({

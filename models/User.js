@@ -2,12 +2,7 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
   {
-    firstName: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    lastName: {
+    fullName: {
       type: String,
       required: true,
       trim: true,
@@ -24,16 +19,7 @@ const userSchema = new mongoose.Schema(
       required: true,
       minlength: 6,
     },
-    gender: {
-      type: String,
-      enum: ["Male", "Female", "Other"],
-      required: true,
-    },
-    mobileNumber: {
-      type: String,
-      required: true,
-      unique: true,
-    },
+
     optVerified: {
       type: Boolean,
       default: false,
