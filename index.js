@@ -7,6 +7,7 @@ const uploadRoutes = require("./routes/upload");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const cors = require("cors");
+const taskRoutes = require("./routes/TaskRoutes")
 
 const app = express();
 
@@ -75,6 +76,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api", uploadRoutes);
+app.use("/api",taskRoutes);
 
 app.listen(PORT, () => {
   console.log(`App started on PORT: ${PORT}`);
