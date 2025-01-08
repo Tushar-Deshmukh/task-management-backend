@@ -90,6 +90,7 @@ exports.register = async (req, res) => {
       message: "User registered successfully. OTP sent to email.",
     });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({
       success: false,
       error: error,

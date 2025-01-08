@@ -24,7 +24,6 @@ const taskModelSchema = new mongoose.Schema({
     enum: ["Active", "Completed", "Pending"],
     default: "Pending",
   },
-
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
