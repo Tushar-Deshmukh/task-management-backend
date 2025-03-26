@@ -250,7 +250,7 @@ exports.login = async (req, res) => {
     }
 
     // Check if the user is verified
-    if (!user.optVerified) {
+    if (!user.otpVerified) {
       return res.status(401).json({
         success: false,
         message: "User is not verified. Please complete OTP verification.",
@@ -270,7 +270,7 @@ exports.login = async (req, res) => {
 
     // Generate JWT token
     const token = jwt.sign(
-      { userId: user._id, email: user.email },
+      { userId: user._id, email: user.email, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
@@ -278,13 +278,21 @@ exports.login = async (req, res) => {
     // Return success response with token
     return res.status(200).json({
       success: true,
+      status: "success",
       message: "Login successfully!",
-      token,
-      user:user
+      data: {
+        token: token,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        city: user.city,
+        role: user.role,
+      },
     });
   } catch (error) {
     return res.status(500).json({
       success: false,
+      status: "failure",
       message: "Something went wrong",
       error: error.message,
     });
@@ -458,6 +466,44 @@ exports.resetPassword = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Internal Server Error",
+    });
+  }
+};
+
+/**
+ * @swagger
+ * /api/auth/logout:
+ *   post:
+ *     summary: User logout
+ *     description: Logs out a user by invalidating the JWT token.
+ *     tags:
+ *       - Users
+ *     responses:
+ *       200:
+ *         description: Successful logout
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Logout successful"
+ */
+
+exports.logout = async (req, res) => {
+  try {
+    return res.status(200).json({
+      success: true,
+      status: "success",
+      message: "Logout successful",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      status: "failure",
+      message: "Something went wrong",
+      error: error.message,
     });
   }
 };

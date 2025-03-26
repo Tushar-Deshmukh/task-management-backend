@@ -2,10 +2,18 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
   {
-    fullName: {
+    firstName: {
       type: String,
       required: true,
       trim: true,
+    },
+    lastName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    mobileNumber: {
+      type: Number,
     },
     email: {
       type: String,
@@ -19,7 +27,7 @@ const userSchema = new mongoose.Schema(
       minlength: 6,
     },
 
-    optVerified: {
+    otpVerified: {
       type: Boolean,
       default: false,
     },
@@ -29,12 +37,20 @@ const userSchema = new mongoose.Schema(
     otpExpiresIn: {
       type: Date,
     },
-    passwordResetToken:{
-      type:String,
+    passwordResetToken: {
+      type: String,
     },
-    passwordResetExpires:{
-      type:Date,
-    }
+    passwordResetExpires: {
+      type: Date,
+    },
+    city: {
+      type: String,
+    },
+    role: {
+      type: String,
+      enum: ["admin", "user"],
+      default: "user",
+    },
   },
   { timestamps: true }
 );
