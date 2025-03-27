@@ -131,12 +131,113 @@ exports.createUser = async (req, res) => {
 
 exports.getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({role:'user'});
+    const users = await User.find({ role: "user" });
     return res.status(200).json({
       success: true,
       status: "success",
       message: "Users found successfully!",
       data: users,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      status: "failure",
+      message: "Something went wrong",
+      error: error.message,
+    });
+  }
+};
+
+/**
+ * @swagger
+ * /api/get-user/{id}:
+ *   get:
+ *     summary: Get user by ID
+ *     description: Retrieves a user from the database using their unique ID.
+ *     tags:
+ *       - Users
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the user to retrieve
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: User found successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 message:
+ *                   type: string
+ *                   example: User found!
+ *                 data:
+ *                   $ref: '#/components/schemas/User'
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 status:
+ *                   type: string
+ *                   example: failure
+ *                 message:
+ *                   type: string
+ *                   example: User not found
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 status:
+ *                   type: string
+ *                   example: failure
+ *                 message:
+ *                   type: string
+ *                   example: Something went wrong
+ *                 error:
+ *                   type: string
+ *                   example: Internal Server Error
+ */
+
+exports.getUserById = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        status: "failure",
+        message: "User not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      status: "success",
+      message: "User found!",
+      data: user,
     });
   } catch (error) {
     return res.status(500).json({
